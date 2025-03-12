@@ -40,42 +40,50 @@ window.addEventListener('scroll', blurHeader)
 const contactForm = document.getElementById('contact-form'),
     contactMessage = document.getElementById('contact-message');
 
+// Initialize EmailJS with your public key
 (function () {
     emailjs.init({
         publicKey: "l0XsmT6JxbHLOdLaA",
     });
 })();
+
 const sendEmail = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    
+    // Show loading message
+    contactMessage.textContent = 'Sending message...';
+    
+    // Get form data
     const templateParams = {
         user_name: document.querySelector('input[name="user_name"]').value,
         user_email: document.querySelector('input[name="user_email"]').value,
         message: document.querySelector('textarea[name="message"]').value,
         to_name: 'Sagar Adhikari'
     };
-    // serviceID - templateID - templateParams - #form
-    emailjs.send('service_ets7ayd', 'template_gh5cnm2', templateParams, e.target)
+    
+    // Send email - fixed to use the correct EmailJS v4 syntax
+    emailjs.send('service_ets7ayd', 'template_gh5cnm2', templateParams)
         .then(() => {
-            // Show sent message
-            contactMessage.textContent = 'Message sent successfully 😉'
+            // Show success message
+            contactMessage.textContent = 'Message sent successfully 😉';
 
             // Remove message after five seconds
             setTimeout(() => {
-                contactMessage.textContent = ''
-            }, 5000)
+                contactMessage.textContent = '';
+            }, 5000);
 
             // Clear input fields
-            contactForm.reset()
-
-
-        }, (error) => {
-            // Show error message
-            contactMessage.textContent = `Message not sent: (${error.text})😭`
-
+            contactForm.reset();
         })
+        .catch((error) => {
+            // Show detailed error message
+            console.error('Email error:', error);
+            contactMessage.textContent = `Message not sent: ${error.text || 'Check console for details'} 😭`;
+        });
+};
 
-}
-contactForm.addEventListener('submit', sendEmail)
+// Add form submission event listener
+contactForm.addEventListener('submit', sendEmail);
 
 
 /*=============== SHOW SCROLL UP ===============*/
@@ -117,8 +125,8 @@ const sr = ScrollReveal({
     delay: 100,
 })
 
-sr.reveal(`.home__data, .home__social , .contact__container, .footer__container`)
+sr.reveal(`.home__data, .home__social, .contact__container, .footer__container`)
 sr.reveal(`.home__image`, { origin: 'bottom' })
-sr.reveal(`.about__data , .skills__data`, { origin: 'left' })
-sr.reveal(`.about__image , .skills__content`, { origin: 'right' })
-sr.reveal(`.services__card , .projects__card`, { interval: 100 })
+sr.reveal(`.about__data, .skills__data`, { origin: 'left' })
+sr.reveal(`.about__image, .skills__content`, { origin: 'right' })
+sr.reveal(`.services__card, .projects__card`, { interval: 100 })
